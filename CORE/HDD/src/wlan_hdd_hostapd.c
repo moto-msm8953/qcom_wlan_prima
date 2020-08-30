@@ -1618,15 +1618,14 @@ VOS_STATUS hdd_hostapd_SAPEventCB( tpSap_Event pSapEvent, v_PVOID_t usrDataForCa
             break;
 
         case eSAP_MAX_ASSOC_EXCEEDED:
-            snprintf(maxAssocExceededEvent, IW_CUSTOM_MAX, "Peer %02x:%02x:%02x:%02x:%02x:%02x denied"
-                    " assoc due to Maximum Mobile Hotspot connections reached. Please disconnect"
-                    " one or more devices to enable the new device connection",
-                    pSapEvent->sapevt.sapMaxAssocExceeded.macaddr.bytes[0],
-                    pSapEvent->sapevt.sapMaxAssocExceeded.macaddr.bytes[1],
-                    pSapEvent->sapevt.sapMaxAssocExceeded.macaddr.bytes[2],
-                    pSapEvent->sapevt.sapMaxAssocExceeded.macaddr.bytes[3],
-                    pSapEvent->sapevt.sapMaxAssocExceeded.macaddr.bytes[4],
-                    pSapEvent->sapevt.sapMaxAssocExceeded.macaddr.bytes[5]);
+            /* Beging Motorola IKHSS7-18970 fpx478, 30/03/2012, nottification to MHS */
+            /* Redefining the Custom Message
+             * IW_CUSTOM_MAX will inform when STA is denied when assoc due to Maximum Mobile
+             * Hotspot connections reached. Please disconnect one or more devices to enable
+             * the new device connection, and we dont require the MAC address of the STA
+             */
+            snprintf(maxAssocExceededEvent, IW_CUSTOM_MAX, "eSAP_MAX_ASSOC_EXCEEDED");
+            /* END IKHSS7-18970 */
             we_event = IWEVCUSTOM; /* Discovered a new node (AP mode). */
             wrqu.data.pointer = maxAssocExceededEvent;
             wrqu.data.length = strlen(maxAssocExceededEvent);
